@@ -4,6 +4,7 @@ import com.arv.quiz.quizservice.entities.Question;
 import com.arv.quiz.quizservice.entities.Quiz;
 import com.arv.quiz.quizservice.service.QuizService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ public class QuizController {
 
     int retry=1;
     @GetMapping
-    @Retry(name="quizQuestionAll",fallbackMethod = "quizQuestionFallbackMethodAll")
+    //@Retry(name="quizQuestionAll",fallbackMethod = "quizQuestionFallbackMethodAll")
+    @RateLimiter(name="quizQuestionRateLimiter",fallbackMethod = "quizQuestionFallbackMethodAll")
     public List<Quiz> get(){
         System.out.println("retry ::" +retry);
         retry++;
